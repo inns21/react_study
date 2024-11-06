@@ -27,8 +27,9 @@ class App extends Component {
       ]
     }
   }
-  render() {
-    console.log('App 실행')
+
+  // welcome, read, create 함수로 만들기
+  getArticles() {
     let _title, _desc, _article = null;
     if (this.state.mode === 'welcome') {
       _title = this.state.welcome.title;
@@ -44,18 +45,34 @@ class App extends Component {
       _article = <CreateArticle onSubmit={(_title, _desc) => {
         console.log(_title, _desc);
         this.max_menu_id += 1;
-        // this.state.menus.push({
-        //   id: this.max_menu_id,
-        //   title: _title,
-        //   desc: _desc
+        // let _menus = this.state.menus.concat({id: this.max_menu_id, title: _title, desc: _desc})
+        // this.setState({
+        //   menus: _menus
         // });
-        let _menus = this.state.menus.concat({id: this.max_menu_id, title: _title, desc: _desc})
+
+        // 생명주기 함수 shouldComponentUpdate에 적용이 안 됨
+        // this.state.menus.push(
+        //   {id:this.max_menu_id, title:_title, desc:_desc}
+        // )
+        // this.setState({
+        //   menus:this.state.menus
+        // });
+
+        let _menus = Array.from(this.state.menus);
+        _menus.push({id:this.max_menu_id, title:_title, desc:_desc})
         this.setState({
           menus: _menus
-        })
+        });
+
       }}></CreateArticle>
 
     }
+    return _article;
+  }
+
+  render() {
+    console.log('App 실행')
+
     return (
       <div className='App'>
         <Myheader
@@ -74,16 +91,9 @@ class App extends Component {
           })
 
         }}></Mynav>
-        {/* <ReadArticle
-          title={_title}
-          desc={_desc}
-          mode={this.state.mode}
-          onChangeMode={(_mode) => {
-          this.setState({
-            mode: _mode
-          })
-        }}></ReadArticle> */}
-        {_article}
+
+        {this.getArticles()}
+
         <hr/>
         <div className="menu">
           <button type='button' className='primary' onClick={() => {
