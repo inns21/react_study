@@ -4,6 +4,7 @@ import Myheader from './component/Myheader';
 import Mynav from './component/Mynav';
 import ReadArticle from './component/ReadArticle';
 import CreateArticle from './component/CreateArticle';
+import UpdateArticle from './component/UpdateArticle';
 
 class App extends Component {
   constructor(props) {
@@ -28,6 +29,12 @@ class App extends Component {
     }
   }
 
+  getReadArticle() {
+    let idx = this.state.menus.findIndex((item) => (item.id === this.state.selected_id));
+    let data = this.state.menus[idx];
+    return data;
+  }
+
   // welcome, read, create 함수로 만들기
   getArticles() {
     let _title, _desc, _article = null;
@@ -36,11 +43,9 @@ class App extends Component {
       _desc = this.state.welcome.desc;
       _article = <ReadArticle title={_title} desc={_desc} mode={this.state.mode}></ReadArticle>
     } else if (this.state.mode === 'read') {
-      let idx = this.state.menus.findIndex((item) => (item.id === this.state.selected_id));
-      let data = this.state.menus[idx];
-      _title = data.title;
-      _desc = data.desc;
-      _article = <ReadArticle title={_title} desc={_desc} onChangeMode={(_mode) => {this.setState({ mode: _mode })}}></ReadArticle>
+      let _data = this.getReadArticle()
+      _article = <ReadArticle title={_data.title} desc={_data.desc} onChangeMode={(_mode) => { this.setState({ mode: _mode }) }}></ReadArticle>
+
     } else if (this.state.mode === 'create') {
       _article = <CreateArticle onSubmit={(_title, _desc) => {
         console.log(_title, _desc);
@@ -61,10 +66,27 @@ class App extends Component {
         let _menus = Array.from(this.state.menus);
         _menus.push({id:this.max_menu_id, title:_title, desc:_desc})
         this.setState({
-          menus: _menus
+          menus: _menus,
+          mode: 'read',
+          selected_id: this.max_menu_id
         });
 
       }}></CreateArticle>
+    } else if (this.state.mode === 'update') {
+      let _content = this.getReadArticle();
+      _article = <UpdateArticle data={ _content} onSubmit={(_id,_title, _desc) => {
+
+        let _menus = Array.from(this.state.menus);
+        _menus.forEach((item, index) => {
+          if (item.id === _id) {
+            _menus[index] = {id:_id, title:_title, desc:_desc}
+          }
+        });
+        this.setState({
+          menus: _menus,
+          mode:'read'
+        });
+      }}></UpdateArticle>
 
     }
     return _article;
