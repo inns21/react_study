@@ -2,15 +2,37 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Todo from './Todo';
 
 function App() {
   const [todo, setTodo] = useState([
-    { id: 1, text: 'Learn Web', checked: false },
-    { id: 2, text: 'Get a Job', checked: false }
+    // { id: 1, text: 'Learn Web', checked: false },
+    // { id: 2, text: 'Get a Job', checked: false }
   ]);
-  const [todoid, setTodoid] = useState(2);
+  const [todoid, setTodoid] = useState(0);
+
+  const getTodoList = () => {
+    console.log('getTodoList 실행')
+    const todoStringFromStorage = window.localStorage.getItem('todo');
+    console.log(todoStringFromStorage);
+    if (todoStringFromStorage !== null) {
+      const todoObj = JSON.parse(todoStringFromStorage);
+      setTodo(todoObj);
+    }
+  }
+
+  const setStorage = () => {
+    console.log('setStorage 실행');
+    const todoString = JSON.stringify(todo);
+    window.localStorage.setItem('todo', todoString);
+  }
+  useEffect(() => {
+    getTodoList();
+  },[])
+  useEffect(() => {
+    setStorage();
+  },[todo])
 
   const deleteTodo = (id) => {
     let newTodos = [...todo];
@@ -26,8 +48,14 @@ function App() {
     newTodos[index] = { id: id, text: newTodos[index].text, check};
     setTodo(newTodos);
   }
+  const update = (id, val) => {
+    let newTodos = [...todo];
+    let index = newTodos.findIndex(item => (item.id === id));
+    newTodos[index] = {id: id, text: val, check: newTodos[index].checked};
+    setTodo(newTodos);
+  }
 
-  let todos = todo.map((item => <Todo key={item.id} data={item} deleteTodo={deleteTodo} setChecked={setChecked}/>))
+  let todos = todo.map((item => <Todo key={item.id} data={item} deleteTodo={deleteTodo} setChecked={setChecked} update={update} />))
   let addTodo = ((value) => {
     let newTodos = [...todo];
     let newId = todoid + 1;
