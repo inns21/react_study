@@ -8,10 +8,12 @@ console.log(authService);
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      setIsLoggedIn(true)
+      setIsLoggedIn(true);
+      setUserObj(user.uid);
     } else {
       setIsLoggedIn(false);
     }
@@ -21,7 +23,7 @@ function App() {
   return (
     <>
       {
-        init ? <AppRouter isLoggedIn={isLoggedIn}></AppRouter> : "회원 정보 확인 중..."
+        init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj}></AppRouter> : "회원 정보 확인 중..."
       }
     </>
   );

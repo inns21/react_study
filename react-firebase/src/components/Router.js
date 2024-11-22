@@ -2,22 +2,29 @@ import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Auth from "../routes/Auth";
 import Home from "../routes/Home";
+import Nav from "./Nav";
+import Profile from "../routes/Profile";
 
-const AppRouter = ({isLoggedIn}) => {
+const AppRouter = ({isLoggedIn, userObj}) => {
   return (
-    <Routes>
-      {isLoggedIn ? (
-        <>
-          <Route path="/" element={<Home />}></Route>
-        </>
-      )
-        : (
+    <>
+      <h1>Board</h1>
+      {isLoggedIn && <Nav/>}
+      <Routes>
+        {isLoggedIn ? (
           <>
-            <Route path="/" element={<Auth />}></Route>
+            <Route path="/" element={<Home userObj={userObj}/>}></Route>
+            <Route path="/profile" element={<Profile />}></Route>
           </>
-      )
-      }
-    </Routes>
+        )
+          : (
+            <>
+              <Route path="/" element={<Auth />}></Route>
+            </>
+        )
+        }
+      </Routes>
+    </>
   )
 }
 
