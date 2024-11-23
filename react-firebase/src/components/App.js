@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AppRouter from './Router';
 import { authService } from "../firebase";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import '../App.css';
 
 console.log(authService);
 

@@ -55,15 +55,15 @@ const Home = ({userObj}) => {
   return (
     <div>
       <form onSubmit={onSubmit}>
-        <input value={post} type='text' placeholder='새 포스팅' onChange={onChange}></input>
-        <button type='submit'>입력</button>
+          <input value={post} type='text' placeholder='새 포스팅' onChange={onChange}></input>
+          <button type='submit'>입력</button>
       </form>
       <hr/>
       <h3>Post List</h3>
-      <ul>
+      <ul className='postlist'>
         {
           posts.map(item => (
-            <Post key={item.id} postObj={item.content}></Post>
+            <Post key={item.id} postObj={item} isOwner={item.uid === userObj}></Post>
           ))
         }
       </ul>
